@@ -30,6 +30,40 @@ def main(page: ft.Page):
     def handle_on_hover(e):
         print(f"{e.control.content.value}.on_hover")
 
+    author = ft.Text("Developed by Dmitry Platonychev",size=20, italic=True)
+    resourses = ft.Text("Resources : Material Icons, Midjourney")
+    year = ft.Text("2024")
+
+    def close_dlg(e):
+        dlg.open = False
+        page.update()
+
+    dlg = ft.AlertDialog(
+        modal=True,
+        title=ft.Text("League Simulation GUI", text_align="CENTER"),
+      
+        content= ft.Column([
+            author,
+            resourses,
+            year
+            ],
+            tight=True,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+        actions=[
+            ft.TextButton("OK", on_click=close_dlg),
+            
+        ],
+        actions_alignment=ft.MainAxisAlignment.CENTER,
+        on_dismiss=lambda e: print("Dialog dismissed!")
+    )
+
+
+
+    def open_dlg(e):
+        page.dialog = dlg
+        dlg.open = True
+        page.update()
+
     # page.appbar = ft.AppBar(
     #     title=ft.Text("Menus", ref=appbar_text_ref, font_family="Segoe Print Bold"),
     #     center_title=True,
@@ -66,11 +100,12 @@ def main(page: ft.Page):
                         style=ft.ButtonStyle(bgcolor={ft.MaterialState.HOVERED: ft.colors.GREEN_200}),
                         on_click=handle_menu_item_click
                     ),
+                    ft.Divider(),
                     ft.MenuItemButton(
                         content=ft.Text("Quit"),
                         leading=ft.Icon(ft.icons.CLOSE, color='red'),
                         style=ft.ButtonStyle(bgcolor={ft.MaterialState.HOVERED: ft.colors.GREEN_200}),
-                        on_click=handle_menu_item_click
+                        on_click=lambda _: page.window_close()
                     )
                 ]
             ),
@@ -208,7 +243,12 @@ def main(page: ft.Page):
                         ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=10),
                     },
                     ),
+                    on_click=open_dlg,
                 )
+
+
+
+
 
 
     page.add(
