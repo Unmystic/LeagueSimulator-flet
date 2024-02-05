@@ -1,8 +1,20 @@
 import flet as ft
 
 def main(page: ft.Page):
+
+    #page.window_title_bar_hidden = True
+    page.window_height = 520
+    page.window_width = 660
+    page.window_center()
+    page.window_min_height, page.window_min_width = 480, 640
+    page.fonts = {
+        
+        "Segoe Print Bold": "fonts/segoeprint_bold.ttf",
+    }
+
     page.theme_mode = ft.ThemeMode.LIGHT
-    appbar_text_ref = ft.Ref[ft.Text]()
+    page.bgcolor = "#D3FFDE"
+    appbar_text_ref = ft.Ref[ft.Text,]()
 
     def handle_menu_item_click(e):
         print(f"{e.control.content.value}.on_click")
@@ -19,11 +31,11 @@ def main(page: ft.Page):
     def handle_on_hover(e):
         print(f"{e.control.content.value}.on_hover")
 
-    page.appbar = ft.AppBar(
-        title=ft.Text("Menus", ref=appbar_text_ref),
-        center_title=True,
-        bgcolor=ft.colors.BLUE
-    )
+    # page.appbar = ft.AppBar(
+    #     title=ft.Text("Menus", ref=appbar_text_ref, font_family="Segoe Print Bold"),
+    #     center_title=True,
+    #     bgcolor=ft.colors.BLUE
+    # )
 
     menubar = ft.MenuBar(
         expand=True,
@@ -91,8 +103,119 @@ def main(page: ft.Page):
         ]
     )
 
+    img = ft.Image(
+        src=f"animals_soccer.png",
+        fit=ft.ImageFit.FIT_WIDTH,
+    )
+
+    container =  ft.Row(
+            [
+                ft.ElevatedButton(
+                    
+                    content=ft.Text(value="New League", size=20, font_family="Segoe Print Bold"),
+                    style=ft.ButtonStyle(
+                    color={
+                        ft.MaterialState.HOVERED: ft.colors.BLACK,
+                        ft.MaterialState.FOCUSED: ft.colors.BLACK,
+                        ft.MaterialState.DEFAULT: ft.colors.BLACK,
+                    },
+                    bgcolor={ft.MaterialState.FOCUSED: ft.colors.GREEN_800, "": ft.colors.GREEN_500},
+                    padding={ft.MaterialState.DEFAULT: 20},
+                    overlay_color=ft.colors.TRANSPARENT,
+                    elevation={"pressed": 0, "": 1},
+                    animation_duration=500,
+                    side={
+                        ft.MaterialState.DEFAULT: ft.BorderSide(1, ft.colors.WHITE),
+                        ft.MaterialState.HOVERED: ft.BorderSide(2, ft.colors.WHITE),
+                    },
+                    shape={
+                        ft.MaterialState.HOVERED: ft.RoundedRectangleBorder(radius=10),
+                        ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=10),
+                    },
+                    ),
+                ),
+                ft.ElevatedButton(
+                    
+                    content=ft.Text(value="Hall of Fame", size=20, font_family="Segoe Print Bold"),
+                    style=ft.ButtonStyle(
+                    color={
+                        ft.MaterialState.HOVERED: ft.colors.BLACK,
+                        ft.MaterialState.FOCUSED: ft.colors.BLACK,
+                        ft.MaterialState.DEFAULT: ft.colors.BLACK,
+                    },
+                    bgcolor={ft.MaterialState.FOCUSED: ft.colors.GREEN_800, "": ft.colors.GREEN_500},
+                    padding={ft.MaterialState.DEFAULT: 20},
+                    overlay_color=ft.colors.TRANSPARENT,
+                    elevation={"pressed": 0, "": 1},
+                    animation_duration=500,
+                    side={
+                        ft.MaterialState.DEFAULT: ft.BorderSide(1, ft.colors.WHITE),
+                        ft.MaterialState.HOVERED: ft.BorderSide(2, ft.colors.WHITE),
+                    },
+                    shape={
+                        ft.MaterialState.HOVERED: ft.RoundedRectangleBorder(radius=10),
+                        ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=10),
+                    },
+                    ),
+                ),
+                ft.ElevatedButton(
+                    
+                    content=ft.Text(value="Tutorial", size=20, font_family="Segoe Print Bold"),
+                    style=ft.ButtonStyle(
+                    color={
+                        ft.MaterialState.HOVERED: ft.colors.BLACK,
+                        ft.MaterialState.FOCUSED: ft.colors.BLACK,
+                        ft.MaterialState.DEFAULT: ft.colors.BLACK,
+                    },
+                    bgcolor={ft.MaterialState.FOCUSED: ft.colors.GREEN_800, "": ft.colors.GREEN_500},
+                    padding={ft.MaterialState.DEFAULT: 20},
+                    overlay_color=ft.colors.TRANSPARENT,
+                    elevation={"pressed": 0, "": 1},
+                    animation_duration=500,
+                    side={
+                        ft.MaterialState.DEFAULT: ft.BorderSide(1, ft.colors.WHITE),
+                        ft.MaterialState.HOVERED: ft.BorderSide(2, ft.colors.WHITE),
+                    },
+                    shape={
+                        ft.MaterialState.HOVERED: ft.RoundedRectangleBorder(radius=10),
+                        ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=10),
+                    },
+                    ),
+                ),
+                ft.ElevatedButton(
+                    
+                    content=ft.Text(value="About", size=20, font_family="Segoe Print Bold"),
+                    style=ft.ButtonStyle(
+                    color={
+                        ft.MaterialState.HOVERED: ft.colors.BLACK,
+                        ft.MaterialState.FOCUSED: ft.colors.BLACK,
+                        ft.MaterialState.DEFAULT: ft.colors.BLACK,
+                    },
+                    bgcolor={ft.MaterialState.FOCUSED: ft.colors.GREEN_800, "": ft.colors.GREEN_500},
+                    padding={ft.MaterialState.DEFAULT: 20},
+                    overlay_color=ft.colors.TRANSPARENT,
+                    elevation={"pressed": 0, "": 1},
+                    animation_duration=500,
+                    side={
+                        ft.MaterialState.DEFAULT: ft.BorderSide(1, ft.colors.WHITE),
+                        ft.MaterialState.HOVERED: ft.BorderSide(2, ft.colors.WHITE),
+                    },
+                    shape={
+                        ft.MaterialState.HOVERED: ft.RoundedRectangleBorder(radius=10),
+                        ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=10),
+                    },
+                    ),
+                )
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+            spacing=20,
+        ),
+
     page.add(
         ft.Row([menubar]),
+        img,
+        ft.Row(container, alignment=ft.MainAxisAlignment.CENTER, expand=True)
+        
     )
 
 
