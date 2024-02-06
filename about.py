@@ -82,8 +82,8 @@ def main(page: ft.Page):
         ft.ElevatedButton("Open modal dialog", on_click=lambda e: About_dlg(page)),
     )
     
-
-ft.app(target=main)
+if __name__ == "__main__":
+    ft.app(target=main)
 
 
 

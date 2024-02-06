@@ -1,5 +1,7 @@
 import flet as ft
 
+import about
+
 def main(page: ft.Page):
 
     #page.window_title_bar_hidden = True
@@ -243,7 +245,7 @@ def main(page: ft.Page):
                         ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=10),
                     },
                     ),
-                    on_click=open_dlg,
+                    on_click=lambda e: about.About_dlg(page),
                 )
 
 
