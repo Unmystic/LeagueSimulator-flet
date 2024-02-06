@@ -79,7 +79,7 @@ def main(page: ft.Page):
 
     #print(my_dlg)
     page.add(
-        ft.ElevatedButton("Open modal dialog", on_click=About_dlg(page)),
+        ft.ElevatedButton("Open modal dialog", on_click=lambda e: About_dlg(page)),
     )
     
 
