@@ -1,205 +1,90 @@
 import flet as ft
 
+
 table = """
 
+After selecting **New League by** clicking button or choosing in menu you can :
 
-# Flet
+1. Select number of teams your want in you league . 
+For scheduling purposes the number has to be even. 
+Currently max number of teams are 20.
 
-<img src="https://raw.githubusercontent.com/flet-dev/flet/flet-widget/media/logo/flet-logo.svg" width="50%"/>
+2. You have an option to add your *own* custom team. 
+*First*, you type your team name, then you can select your team playstyle.
+*Team style* changes your attacking/defensive focus (essentially determines your preference to higher attack or defence rating).
 
-Flet is a framework for adding server-driven UI (SDUI) experiences to existing Flutter apps or building standalone web, mobile and desktop apps with Flutter UI.
+3. *Finally*,  you must populate the league with additional teams to match your selected number of teams.
+The names of the teams are generated based on the two dictionaries (firstname and lastname).
+After population click **"Start Simulation"**.
 
-Add an interactive `FletApp` widget to your Flutter app whose content is controlled by a remote Python script.
-It is an ideal solution for building non-core or frequently changing functionality such as product catalog, feedback form, in-app survey or support chat. Flet enables your team to ship new features faster by reducing the number of App Store validation cycles. Just re-deploy a web app hosting a Python script and your users will get an instant update!
+4. You can simulate round by round or you can simulate whole tournament at once.
+If you tired clicking **"Simulate tour"** button, you can simulate rest of the tournament.
 
-On the server side Flet provides an easy to learn programming model that enables Python developers without prior Flutter (or even front-end) experience to participate in development of your larger Flutter app or build their own apps with Flutter UI from scratch.
+5. To reach ***Hall of Fame*** table, your team must:
 
-## Getting started with Flet
+- Be undefeated.
+- Have better result than 10th place in HoF.
 
-### Install `flet` Python module
-
-Flet requires Python 3.7 or above. To start with Flet, you need to install flet module first:
-
-```
-pip install flet
-```
-
-### Create Python program
-
-Create a new Python program using Flet which will be driving the content of `FletApp` widget.
-
-Let's do a simple `counter.py` app similar to a Flutter new project template:
-
-```python
-import flet
-from flet import IconButton, Page, Row, TextField, icons
-
-def main(page: Page):
-    page.title = "Flet counter example"
-    page.vertical_alignment = "center"
-
-    txt_number = TextField(value="0", text_align="right", width=100)
-
-    def minus_click(e):
-        txt_number.value = int(txt_number.value) - 1
-        page.update()
-
-    def plus_click(e):
-        txt_number.value = int(txt_number.value) + 1
-        page.update()
-
-    page.add(
-        Row(
-            [
-                IconButton(icons.REMOVE, on_click=minus_click),
-                txt_number,
-                IconButton(icons.ADD, on_click=plus_click),
-            ],
-            alignment="center",
-        )
-    )
-
-flet.app(target=main, port=8550)
-```
-
-Run the app:
-
-```
-python counter.py
-```
-
-You should see the app running in a native OS window.
-
-There is a web server (Fletd) running in the background on a fixed port `8550`. Fletd web server is a "bridge" between Python and Flutter.
-
-`FletApp` widget in your Flutter application will be communicating with Fletd web server via WebSockets to receive UI updates and send user-generated UI events.
-
-For production use Python app along with Fletd could be [deployed to a public web host](https://flet.dev/docs/guides/python/deploying-web-app) and be accessible via HTTPS with domain name.
-
-### Add Flet widget to a Flutter app
-
-Create a new or open existing Flutter project.
-
-Install Flutter `flet` package:
-
-```
-flutter pub add flet
-```
-
-For a new project replace `main.dart` with the following:
-
-```dart
-import 'package:flet/flet.dart';
-import 'package:flutter/material.dart';
-
-void main() async {
-  await setupDesktop();
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Flet Flutter Demo',
-      home: FletApp(pageUrl: "http://localhost:8550"),
-    );
-  }
-}
-```
-
-In the app above `FletApp` widget is hosted inside `MaterialApp` widget.
-
-If Flet app must be able to handle page route change events (web browser URL changes, mobile app deep linking) it must be the top most widget as it contains its own `MaterialApp` widget handling route changes:
-
-```dart
-import 'package:flet/flet.dart';
-import 'package:flutter/material.dart';
-
-void main() async {
-  await setupDesktop();
-  runApp(const FletApp(pageUrl: "http://localhost:8550"));
-}
-```
-
-Run the program and see Flet app running inside a Flutter app.
-
-## About
-
-__League Simulation GUI__
-
-*Developed* by
-**Dmitry Platonychev**
-
-Art used :
-
-- Fugue Icons by Yusuke Kamiyamane
-
-- Midjourney
-
-~~2023~~ 2024
+"""
 
 
-## Tables
+class Tutorial_dlg(ft.UserControl):
 
-|Syntax                                 |Result                               |
-|---------------------------------------|-------------------------------------|
-|`*italic 1*`                           |*italic 1*                           |
-|`_italic 2_`                           | _italic 2_                          |
-|`**bold 1**`                           |**bold 1**                           |
-|`__bold 2__`                           |__bold 2__                           |
-|`This is a ~~strikethrough~~`          |This is a ~~strikethrough~~          |
-|`***italic bold 1***`                  |***italic bold 1***                  |
-|`___italic bold 2___`                  |___italic bold 2___                  |
-|`***~~italic bold strikethrough 1~~***`|***~~italic bold strikethrough 1~~***|
-|`~~***italic bold strikethrough 2***~~`|~~***italic bold strikethrough 2***~~|
+    def __init__(self, page: ft.Page):
+        super().__init__()
 
-
-When adding `FletApp` widget to the existing desktop Flutter app make sure `setupDesktop()` is called before `runApp()` to initialize Flet's built-in window manager.
-
-## Flet learning resources
-
-* [Getting started for Python](https://flet.dev/docs/guides/python/getting-started/)
-* [Controls reference](https://flet.dev/docs/controls)
-* [Tutorials](https://flet.dev/docs/tutorials)
-* [Examples](https://github.com/flet-dev/examples/tree/main/python)
-
-## Flet community
-
-* [Discussions](https://github.com/flet-dev/flet/discussions)
-* [Discord](https://discord.gg/dzWXP8SHG8)
-* [Twitter](https://twitter.com/fletdev)
-* [Email](mailto:hello@flet.dev)
-
-## FAQ
-
-Coming soon.
-
-## Adding custom Flutter widgets
-
-Coming soon.
-        """
-
-
-def main(page: ft.Page):
-    page.scroll = "auto"
-
-    page.fonts = {
-        "Roboto Mono": "RobotoMono-VariableFont_wght.ttf",
-    }
-
-    page.add(
-        ft.Markdown(
+        self.page = page  
+        self.dlg = ft.AlertDialog(
+        modal=True,
+        title=ft.Text("How to simulate league tournament with this app?"),
+        content=ft.Markdown(
             table,
             selectable=True,
             extension_set="gitHubWeb",
             code_theme="atom-one-dark",
             code_style=ft.TextStyle(font_family="Roboto Mono"),
             on_tap_link=lambda e: page.launch_url(e.data),
+        ),
+        actions=[
+            ft.TextButton("Ok", on_click=self.close_dlg),
+            
+        ],
+        actions_alignment=ft.MainAxisAlignment.CENTER,
+        on_dismiss=lambda e: print("Modal dialog dismissed!"),
         )
+        self.page.dialog = self.dlg
+        self.dlg.open = True
+        self.page.update()   
+
+    def close_dlg(self, e):
+         print("Wapapa")
+         self.dlg.open = False
+         self.page.update()
+
+    def build(self, e):
+        print("I am here!")
+        # print("I am there!")
+        return  self.dlg
+
+# def run_dlg(page: ft.Page):
+#     dial = About(page)
+#     return dial
+
+def main(page: ft.Page):
+
+    page.title = "AlertDialog examples"
+    #my_dlg =About_dlg(page)
+
+    #print(my_dlg)
+    page.add(
+        ft.ElevatedButton("Open modal dialog", on_click=lambda e: Tutorial_dlg(page)),
     )
+    
+if __name__ == "__main__":
+    ft.app(target=main)
 
 
-ft.app(target=main, assets_dir="assets")
+
+
+
+

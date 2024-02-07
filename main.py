@@ -1,6 +1,7 @@
 import flet as ft
 
 import about
+import tutorial
 
 def main(page: ft.Page):
 
@@ -123,14 +124,14 @@ def main(page: ft.Page):
                                 leading=ft.Icon(ft.icons.INFO),
                                 close_on_click=False,
                                 style=ft.ButtonStyle(bgcolor={ft.MaterialState.HOVERED: ft.colors.GREEN_200}),
-                                on_click=handle_menu_item_click
+                                on_click=lambda e: about.About_dlg(page)
                             ),
                             ft.MenuItemButton(
                                 content=ft.Text("Tutorial"),
                                 leading=ft.Icon(ft.icons.HELP),
                                 close_on_click=False,
                                 style=ft.ButtonStyle(bgcolor={ft.MaterialState.HOVERED: ft.colors.GREEN_200}),
-                                on_click=handle_menu_item_click
+                                on_click=lambda e: tutorial.Tutorial_dlg(page)
                             )
                   
                 ]
@@ -220,6 +221,7 @@ def main(page: ft.Page):
                         ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=10),
                     },
                     ),
+                    on_click= lambda e: tutorial.Tutorial_dlg(page),
                 )
     
     btn4 = ft.ElevatedButton(
