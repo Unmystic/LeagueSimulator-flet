@@ -16,7 +16,7 @@ def main(page: ft.Page):
     }
 
     page.theme_mode = ft.ThemeMode.LIGHT
-    page.bgcolor = "#D3FFDE"
+    # page.bgcolor = "#D3FFDE"
     page.spacing = 5
 
     def handle_menu_item_click(e):
@@ -196,6 +196,7 @@ def main(page: ft.Page):
                         ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=10),
                     },
                     ),
+                    on_click=lambda _: page.go("/store"),
                 )
     
     btn3= ft.ElevatedButton(
@@ -251,17 +252,49 @@ def main(page: ft.Page):
                 )
 
 
+    def route_change(route):
+        page.views.clear()
+        page.views.append(
+            ft.View(
+                "/",
+                [
+                    ft.Row([menubar]), 
+                    ft.Container(img, alignment=ft.alignment.center, expand=True),
+                    ft.Row([btn1, btn2, btn3, btn4], alignment=ft.MainAxisAlignment.SPACE_EVENLY ) 
+                ],
+            )
+        )
+        if page.route == "/store":
+            page.views.append(
+                ft.View(
+                    "/store",
+                    [
+                        ft.AppBar(title=ft.Text("Store"), bgcolor=ft.colors.SURFACE_VARIANT),
+                        ft.ElevatedButton("Go Home", on_click=lambda _: page.go("/")),
+                    ],
+                )
+            )
+        page.update()
+
+    def view_pop(view):
+        page.views.pop()
+        top_view = page.views[-1]
+        page.go(top_view.route)
+
+    page.on_route_change = route_change
+    page.on_view_pop = view_pop
+    page.go(page.route)
 
 
 
 
-    page.add(
-        ft.Row([menubar]), 
-        ft.Container(img, alignment=ft.alignment.center, expand=True),
-        ft.Row([btn1, btn2, btn3, btn4], alignment=ft.MainAxisAlignment.SPACE_EVENLY ) 
+    # page.add(
+    #     ft.Row([menubar]), 
+    #     ft.Container(img, alignment=ft.alignment.center, expand=True),
+    #     ft.Row([btn1, btn2, btn3, btn4], alignment=ft.MainAxisAlignment.SPACE_EVENLY ) 
         
         
-    )
+    # )
 
 
 ft.app(target=main)

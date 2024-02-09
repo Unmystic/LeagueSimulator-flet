@@ -14,8 +14,8 @@ def main(page: ft.Page):
         "Segoe Print Bold": "fonts/segoeprint_bold.ttf",
     }
 
-    page.theme_mode = ft.ThemeMode.LIGHT
-    page.bgcolor = "#D3FFDE"
+    # page.theme_mode = ft.ThemeMode.DARK
+    page.bgcolor = ft.colors.SURFACE_VARIANT
     page.spacing = 5
 
     CreateTeamButton = ft.ElevatedButton(
