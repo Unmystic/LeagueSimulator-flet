@@ -266,12 +266,25 @@ def main(page: ft.Page):
                 ],
             )
         )
+        if page.route == "/":
+            page.title = "League Simulator"
+            page.window_height = 640
+            page.window_width = 680
+            page.window_center()
+            page.window_min_height, page.window_min_width = 640, 680
+
         if page.route == "/store":
+            page.title = "Hall of fame"
+            page.window_height = 680
+            page.window_width = 570
+            page.window_center()
+            page.window_min_height, page.window_min_width = 680, 560
             page.views.append(
                 ft.View(
                     "/store",
                     [
-                        ft.AppBar(title=ft.Text("Hall of Fame"), bgcolor=ft.colors.GREEN_ACCENT_200, center_title=True),
+                        ft.AppBar(title=ft.Text("Hall of Fame"), bgcolor=ft.colors.GREEN_ACCENT_200, center_title=True,
+                                  actions=[ft.IconButton(ft.icons.HOME, tooltip="Return to main menu", on_click=lambda e: page.go("/"))]),
                         HoFClass(page),
                     ],
                 )
