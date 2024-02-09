@@ -3,6 +3,8 @@ import flet as ft
 import about
 import tutorial
 
+from hall_of_fame import HoFClass
+
 def main(page: ft.Page):
 
     #page.window_title_bar_hidden = True
@@ -269,8 +271,8 @@ def main(page: ft.Page):
                 ft.View(
                     "/store",
                     [
-                        ft.AppBar(title=ft.Text("Store"), bgcolor=ft.colors.SURFACE_VARIANT),
-                        ft.ElevatedButton("Go Home", on_click=lambda _: page.go("/")),
+                        ft.AppBar(title=ft.Text("Hall of Fame"), bgcolor=ft.colors.GREEN_ACCENT_200, center_title=True),
+                        HoFClass(page),
                     ],
                 )
             )
