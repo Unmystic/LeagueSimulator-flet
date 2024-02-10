@@ -2,6 +2,9 @@ import flet as ft
 import csv
 import statistics
 
+
+
+
 def main(page: ft.Page):
 
     #page.window_title_bar_hidden = True

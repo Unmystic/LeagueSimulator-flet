@@ -4,6 +4,7 @@ import about
 import tutorial
 
 from hall_of_fame import HoFClass
+from new_league import NewLeague
 
 def main(page: ft.Page):
 
@@ -11,14 +12,15 @@ def main(page: ft.Page):
     page.window_height = 640
     page.window_width = 680
     page.window_center()
-    page.window_min_height, page.window_min_width = 640, 680
+    # page.window_min_height, page.window_min_width = 640, 480
     page.fonts = {
         
         "Segoe Print Bold": "fonts/segoeprint_bold.ttf",
     }
 
-    page.theme_mode = ft.ThemeMode.LIGHT
-    # page.bgcolor = "#D3FFDE"
+    #page.theme_mode = ft.ThemeMode.LIGHT
+    #page.theme = ft.theme.Theme(color_scheme_seed="green")
+    page.bgcolor = "#D3FFDE"
     page.spacing = 5
 
     def handle_menu_item_click(e):
@@ -103,7 +105,7 @@ def main(page: ft.Page):
                         content=ft.Text("Hall of Fame"),
                         leading=ft.Icon(ft.icons.STARS_OUTLINED,color='#FF80ED'),
                         style=ft.ButtonStyle(bgcolor={ft.MaterialState.HOVERED: ft.colors.GREEN_200}),
-                        on_click=handle_menu_item_click
+                        on_click=lambda _: page.go("/hof"),
                     ),
                     ft.Divider(),
                     ft.MenuItemButton(
@@ -173,6 +175,7 @@ def main(page: ft.Page):
                         ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=10),
                     },
                     ),
+                    on_click=lambda _: page.go("/new-league"),
                 )
     
     btn2= ft.ElevatedButton(
@@ -198,7 +201,7 @@ def main(page: ft.Page):
                         ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=10),
                     },
                     ),
-                    on_click=lambda _: page.go("/store"),
+                    on_click=lambda _: page.go("/hof"),
                 )
     
     btn3= ft.ElevatedButton(
@@ -271,9 +274,9 @@ def main(page: ft.Page):
             page.window_height = 640
             page.window_width = 680
             page.window_center()
-            page.window_min_height, page.window_min_width = 640, 680
+            # page.window_min_height, page.window_min_width = 640, 680
 
-        if page.route == "/store":
+        if page.route == "/hof":
             page.title = "Hall of fame"
             page.window_height = 680
             page.window_width = 570
@@ -281,11 +284,28 @@ def main(page: ft.Page):
             page.window_min_height, page.window_min_width = 680, 560
             page.views.append(
                 ft.View(
-                    "/store",
+                    "/hof",
                     [
                         ft.AppBar(title=ft.Text("Hall of Fame"), bgcolor=ft.colors.GREEN_ACCENT_200, center_title=True,
                                   actions=[ft.IconButton(ft.icons.HOME, tooltip="Return to main menu", on_click=lambda e: page.go("/"))]),
                         HoFClass(page),
+                    ],
+                )
+            )
+
+        if page.route == "/new-league":
+            page.title = "Create new league"
+            #page.bgcolor = ft.colors.SURFACE_VARIANT
+            page.window_height = 680
+            page.window_width = 480
+            page.window_center()
+            page.window_min_height, page.window_min_width = 680, 480
+            page.views.append(
+                ft.View(
+                    "/new-league",
+                    [
+
+                        NewLeague(page),
                     ],
                 )
             )
