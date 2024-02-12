@@ -5,6 +5,7 @@ import tutorial
 
 from hall_of_fame import HoFClass
 from new_league import NewLeague
+from league_simulation import SimulateLeague
 
 def main(page: ft.Page):
 
@@ -276,6 +277,25 @@ def main(page: ft.Page):
                     ],
                 )
             )
+
+        if page.route == "/simulation":
+            page.title = "League simulation"
+            #page.bgcolor = ft.colors.SURFACE_VARIANT
+            page.window_height = 800
+            page.window_width = 980
+            page.window_center()
+            page.window_min_height, page.window_min_width = 680, 480
+            page.views.append(
+                ft.View(
+                    "/simulation",
+                    [
+
+                        SimulateLeague(page),
+                    ],
+                )
+            )
+
+
         page.update()
 
     def view_pop(view):

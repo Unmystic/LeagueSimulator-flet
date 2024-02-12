@@ -1,6 +1,8 @@
 import flet as ft
 
 
+
+
 class NewLeague(ft.UserControl):
 
     def __init__(self, page: ft.Page):
@@ -68,7 +70,7 @@ class NewLeague(ft.UserControl):
                             ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=10),
                         },
                         ),
-                        on_click=lambda e: print(self.result.value),
+                        on_click=self.populate_league,
                     )
         
         self.StartSimulationButton = ft.ElevatedButton(
@@ -95,7 +97,7 @@ class NewLeague(ft.UserControl):
                         },
                         ),
                         disabled=True,
-                        on_click=lambda e: print("Signal to simulation"),
+                        on_click=lambda e: page.go("/simulation"),
                     )
 
         self.TeamListBox = ft.TextField(
@@ -162,15 +164,21 @@ class NewLeague(ft.UserControl):
         self.result.update()
         self.page.update()
 
+    def populate_league(self,e):
+        self.StartSimulationButton.disabled = False
+        self.StartSimulationButton.update()
+        print("Pop")
+        self.PopulateLeagueButton.disabled = True
+        self.PopulateLeagueButton.update()
+        # self.page.update()
     
 
     def build(self):
         print("I am here!")
         
-
-        
-        # print("I am there!")
         return  self.league_creation
+    
+
 
 
 
