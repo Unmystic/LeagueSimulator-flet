@@ -1,5 +1,7 @@
 import flet as ft
-
+import statistics
+import random
+import csv
 
 
 
@@ -23,8 +25,9 @@ class NewLeague(ft.UserControl):
         self.page.bgcolor =  ft.colors.SURFACE_VARIANT
         self.page.spacing = 5
 
-        # Counter for teams - particapants
+        # Counter  and list for teams - particapants
         self.count = 0
+        self.teams = []
 
 
         self.CreateTeamButton = ft.ElevatedButton(
@@ -105,13 +108,14 @@ class NewLeague(ft.UserControl):
                         on_click=lambda e: page.go("/simulation"),
                     )
 
-        self.TeamListBox = ft.TextField(
-                        label="Competitors",
-                        multiline=True,
-                        disabled=True,
-                        min_lines=10,
-                        value="line1        line2\nline3        line4\nline5",
-                    )
+        self.TeamListBox = ft.Container(
+                content=ft.ListView(expand=1, spacing=1, padding=5, auto_scroll=True,item_extent=10, ),
+                border=ft.border.all(2, ft.colors.GREEN_600),
+                border_radius= ft.border_radius.all(10),
+                width=400,
+                height=250
+                
+            )
         
 
 
@@ -184,9 +188,81 @@ class NewLeague(ft.UserControl):
             self.new_team_field.disabled = True
             self.new_team_field.update()
         
+    def populate(self):
+        firstName = []
+        lastName = []
+        team_names = []
+
+        with open("Scripts/data/firstName.txt") as file:
+            for line in file:
+                firstName.append(line.rstrip())
+        with open("Scripts/data/lastName.txt") as file:
+            for line in file:
+                lastName.append(line.rstrip())
+
+        for i in range(self.count, int(self.result.value),1):
+            teamName = f"{firstName[random.randint(0, len(firstName) - 1)]} {lastName[random.randint(0, len(lastName) - 1)]}"
+            if teamName in team_names:
+                teamName = f"{firstName[random.randint(0, len(firstName) - 1)]} {lastName[random.randint(0, len(lastName) - 1)]}"
+            choice = random.choice([1, 2, 3])
+            ar, dr, tc = self.generate_rating(choice)
+            self.TeamListBox.content.controls.append(ft.Text(f"{i + 1}. {teamName}"))
+            # self.listWidget.addItem(f"{i + 1}. {teamName}")
+            self.teams.append({"name": teamName, "attackRating": ar, "defenceRating": dr, "teamCohesion": tc})
+            team_names.append(teamName)
+
+        self.write_teamdata()
+        # self.pushStartSimulation.setEnabled(True)
+        # self.pushAddOthers.setEnabled(False)
+
+    def generate_rating(self, choice=2):
+        ratings = [random.uniform(50, 59.99), random.uniform(60.00, 69.99), random.uniform(70.00, 79.99),
+                   random.uniform(80.00, 89.99), random.uniform(90.00, 94.99)]
+        balanced_weights = {"defence": [5, 10, 30, 40, 15], "attack": [5, 10, 30, 40, 15], "team_cohesion": [5, 10, 30, 40, 15]}
+        def_weights = {"defence": [5, 10, 25, 40, 20], "attack": [5, 10, 35, 40, 10], "team_cohesion": [5, 10, 30, 35, 20]}
+        very_def_weights = {"defence": [5, 10, 25, 35, 25], "attack": [5, 10, 40, 40, 5], "team_cohesion": [5, 10, 35, 40, 10]}
+        att_weights = {"defence": [5, 10, 35, 40, 10], "attack": [5, 10, 25, 40, 20], "team_cohesion": [5, 10, 30, 35, 20]}
+        very_att_weights = {"defence": [5, 10, 40, 40, 5], "attack": [5, 10, 25, 35, 25], "team_cohesion": [5, 10, 35, 40, 10]}
+        weights = [very_def_weights, def_weights, balanced_weights, att_weights, very_att_weights]
+        attackRating = round(statistics.fmean(random.choices(ratings, weights[choice]['attack'], k=5)), 2)
+        defenceRating = round(statistics.fmean(random.choices(ratings, weights[choice]['defence'], k=5)), 2)
+        teamCohesion = round(statistics.fmean(random.choices(ratings, weights[choice]['team_cohesion'], k=5)), 2)
+        return attackRating, defenceRating, teamCohesion
+
+    def write_teamdata(self):
+        with open("Scripts/data/teams.csv", "w", newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=["name", "attackRating", "defenceRating", "teamCohesion"])
+            for team in self.teams:
+                writer.writerow({"name": team["name"], "attackRating": team["attackRating"], "defenceRating": team["defenceRating"], "teamCohesion": team["teamCohesion"] })
             
 
     def populate_league(self,e):
+
+        firstName = []
+        lastName = []
+        team_names = []
+
+        with open("Scripts/data/firstName.txt") as file:
+            for line in file:
+                firstName.append(line.rstrip())
+        with open("Scripts/data/lastName.txt") as file:
+            for line in file:
+                lastName.append(line.rstrip())
+
+        for i in range(self.count, int(self.result.value),1):
+            teamName = f"{firstName[random.randint(0, len(firstName) - 1)]} {lastName[random.randint(0, len(lastName) - 1)]}"
+            if teamName in team_names:
+                teamName = f"{firstName[random.randint(0, len(firstName) - 1)]} {lastName[random.randint(0, len(lastName) - 1)]}"
+            choice = random.choice([1, 2, 3])
+            ar, dr, tc = self.generate_rating(choice)
+            self.TeamListBox.content.controls.append(ft.Text(f"{i + 1}. {teamName}"))
+            self.TeamListBox.update()
+            # self.listWidget.addItem(f"{i + 1}. {teamName}")
+            self.teams.append({"name": teamName, "attackRating": ar, "defenceRating": dr, "teamCohesion": tc})
+            team_names.append(teamName)
+
+        self.write_teamdata()
+
         self.StartSimulationButton.disabled = False
         self.StartSimulationButton.update()
         print("Pop")

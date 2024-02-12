@@ -197,7 +197,7 @@ class SimulateLeague(ft.UserControl):
                 ),
             ],
         # width=900,
-        height=700,
+        height=750,
             
         )
 
