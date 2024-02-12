@@ -148,12 +148,12 @@ class SimulateLeague(ft.UserControl):
             count += 1
 
         self.first_tab = ft.Row(controls=[
-                self.league_table,
-                ft.Column([ft.Text("Linear progress indicator", style="headlineSmall"),
-                           ft.Container(content=ft.Column( [self.pb, self.button_cont]))])
                 # self.league_table,
-                # ft.Container(content=ft.Column([ ft.Text("Linear progress indicator", style="headlineSmall"), self.pb, self.button_cont],
-                #         horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=75))
+                # ft.Column([ft.Text("Linear progress indicator", style="headlineSmall"),
+                #            ft.Container(content=ft.Column( [self.pb, self.button_cont]))])
+                self.league_table,
+                ft.Container(content=ft.Column([ ft.Text("Linear progress indicator", style="headlineSmall"), self.pb, self.button_cont],
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=75))
                     
                 ])
 
@@ -178,39 +178,15 @@ class SimulateLeague(ft.UserControl):
 
     def build(self):
         print("I am here!")
-
-        t = ft.Tabs(
-        selected_index=1,
-        animation_duration=300,
-        tabs=[
-            ft.Tab(
-                text="Tab 1",
-                content=ft.Container(
-                    content=ft.Text("This is Tab 1"), alignment=ft.alignment.center
-                ),
-            ),
-            ft.Tab(
-                tab_content=ft.Icon(ft.icons.SEARCH),
-                content=ft.Text("This is Tab 2"),
-            ),
-            ft.Tab(
-                text="Tab 3",
-                icon=ft.icons.SETTINGS,
-                content=ft.Text("This is Tab 3"),
-            ),
-            ],
-        width=400,
-        height=400,
-        )
         
         self.t = ft.Tabs(
-            selected_index=1,
+            selected_index=0,
             animation_duration=300,
             tabs=[
                 ft.Tab(
                     text="League Table ",
                     content=ft.Container(
-                        content=self.league_table, alignment=ft.alignment.top_left
+                        content=self.first_tab, alignment=ft.alignment.top_left
                     ),
                 ),
 
@@ -220,8 +196,8 @@ class SimulateLeague(ft.UserControl):
                     content=ft.Container(content=self.lv),
                 ),
             ],
-        width=800,
-        height=980,
+        # width=900,
+        height=700,
             
         )
 
