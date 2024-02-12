@@ -23,6 +23,10 @@ class NewLeague(ft.UserControl):
         self.page.bgcolor =  ft.colors.SURFACE_VARIANT
         self.page.spacing = 5
 
+        # Counter for teams - particapants
+        self.count = 0
+
+
         self.CreateTeamButton = ft.ElevatedButton(
                     content=ft.Text(value="Create team", size=14, font_family="Segoe Print Bold"),
                     style=ft.ButtonStyle(
@@ -45,6 +49,7 @@ class NewLeague(ft.UserControl):
                         ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=10),
                     },
                     ),
+                    disabled=True,
                     on_click=lambda e: print("Team created"),
                 )
     
@@ -126,6 +131,7 @@ class NewLeague(ft.UserControl):
                             ],
                         )
 
+        self.new_team_field = ft.TextField(label="Team Name",border=ft.InputBorder.NONE, disabled=True, hint_text="Please enter your team name")
 
         self.league_creation = ft.Column([
             ft.Container(),
@@ -136,8 +142,8 @@ class NewLeague(ft.UserControl):
                 ]),            
             ft.Divider(),
             ft.Column([
-                ft.Checkbox(label="Create your own team", value=False),
-                ft.TextField(label="Team Name",border=ft.InputBorder.NONE, disabled=True, hint_text="Please enter your team name"),
+                ft.Checkbox(label="Create your own team", value=False, on_change=self.checkbox_changed),
+                self.new_team_field,
                 ft.Text(weight=ft.FontWeight.BOLD,size=14, value="Choose team playstyle"),
                 self.playstyle
 
@@ -163,6 +169,22 @@ class NewLeague(ft.UserControl):
 
         self.result.update()
         self.page.update()
+
+    def checkbox_changed(self, e):
+
+        if self.CreateTeamButton.disabled:
+            self.CreateTeamButton.disabled = False
+            self.CreateTeamButton.update()
+            self.new_team_field.disabled = False
+            self.new_team_field.update()
+        
+        else:
+            self.CreateTeamButton.disabled = True
+            self.CreateTeamButton.update()
+            self.new_team_field.disabled = True
+            self.new_team_field.update()
+        
+            
 
     def populate_league(self,e):
         self.StartSimulationButton.disabled = False
