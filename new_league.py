@@ -53,7 +53,7 @@ class NewLeague(ft.UserControl):
                     },
                     ),
                     disabled=True,
-                    on_click=lambda e: print("Team created"),
+                    on_click=self.create_team,
                 )
     
         self.PopulateLeagueButton = ft.ElevatedButton(
@@ -127,12 +127,13 @@ class NewLeague(ft.UserControl):
                         dense=True,
                         content_padding=5,
                         options=[
-                            ft.dropdown.Option("Balanced"),
-                            ft.dropdown.Option("Very Defensive"),
-                            ft.dropdown.Option("Defensive"),
-                            ft.dropdown.Option("Attacking"),
-                            ft.dropdown.Option("Very Attacking"),
+                            ft.dropdown.Option(text="Balanced",key=2),
+                            ft.dropdown.Option(text="Very Defensive", key=0),
+                            ft.dropdown.Option(text="Defensive", key=1),
+                            ft.dropdown.Option(text="Attacking", key=3),
+                            ft.dropdown.Option(text="Very Attacking", key=4),
                             ],
+                        on_change=self.dropdown_changed
                         )
 
         self.new_team_field = ft.TextField(label="Team Name",border=ft.InputBorder.NONE, disabled=True, hint_text="Please enter your team name")
@@ -188,32 +189,29 @@ class NewLeague(ft.UserControl):
             self.new_team_field.disabled = True
             self.new_team_field.update()
         
-    def populate(self):
-        firstName = []
-        lastName = []
-        team_names = []
+    
+    def dropdown_changed(self, e):
 
-        with open("Scripts/data/firstName.txt") as file:
-            for line in file:
-                firstName.append(line.rstrip())
-        with open("Scripts/data/lastName.txt") as file:
-            for line in file:
-                lastName.append(line.rstrip())
+        self.playstyle.error_text = None       
+        self.playstyle.update()
 
-        for i in range(self.count, int(self.result.value),1):
-            teamName = f"{firstName[random.randint(0, len(firstName) - 1)]} {lastName[random.randint(0, len(lastName) - 1)]}"
-            if teamName in team_names:
-                teamName = f"{firstName[random.randint(0, len(firstName) - 1)]} {lastName[random.randint(0, len(lastName) - 1)]}"
-            choice = random.choice([1, 2, 3])
-            ar, dr, tc = self.generate_rating(choice)
-            self.TeamListBox.content.controls.append(ft.Text(f"{i + 1}. {teamName}"))
-            # self.listWidget.addItem(f"{i + 1}. {teamName}")
-            self.teams.append({"name": teamName, "attackRating": ar, "defenceRating": dr, "teamCohesion": tc})
-            team_names.append(teamName)
 
-        self.write_teamdata()
-        # self.pushStartSimulation.setEnabled(True)
-        # self.pushAddOthers.setEnabled(False)
+    def create_team(self,e):
+        if self.new_team_field.value != "":
+            print(self.playstyle.value)
+            if self.playstyle.value == None:
+                self.playstyle.error_text= "Please choose playstyle"
+                self.playstyle.update()
+                return
+            # self.playstyle.update()
+            self.count += 1
+            # self.listWidget.addItem(f"{self.count}. {self.lineEdit.text()}")
+            choice = int(self.playstyle.value)
+            ar, dr, tc = self.generate_rating(choice=choice)
+            self.teams.append({"name": self.new_team_field.value, "attackRating": ar, "defenceRating": dr, "teamCohesion": tc})
+            self.TeamListBox.content.controls.append(ft.Text(f"{self.count}. {self.new_team_field.value}"))
+            self.TeamListBox.update()
+            self.new_team_field.value == ""
 
     def generate_rating(self, choice=2):
         ratings = [random.uniform(50, 59.99), random.uniform(60.00, 69.99), random.uniform(70.00, 79.99),
