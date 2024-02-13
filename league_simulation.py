@@ -141,7 +141,7 @@ class SimulateLeague(ft.UserControl):
 
 
         self.button_cont = ft.Container(content=ft.Column([self.SimulateTourButton, self.SimulateAllButton], 
-                                                        spacing=75, horizontal_alignment= ft.CrossAxisAlignment.END)) 
+                                                        spacing=175, horizontal_alignment= ft.CrossAxisAlignment.END)) 
 
         for i in range(0, 60):
             self.lv.content.controls.append(ft.Text(f"Line {count}"))
@@ -152,10 +152,12 @@ class SimulateLeague(ft.UserControl):
                 # ft.Column([ft.Text("Linear progress indicator", style="headlineSmall"),
                 #            ft.Container(content=ft.Column( [self.pb, self.button_cont]))])
                 self.league_table,
-                ft.Container(content=ft.Column([ ft.Text("Linear progress indicator", style="headlineSmall"), self.pb, self.button_cont],
-                        horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=75))
+                ft.Container(content=ft.Column([ ft.Text("Progress of league", style="headlineSmall", width =100),
+                                                self.pb,
+                                                self.button_cont],
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=50))
                     
-                ])
+                ], spacing =50)
 
         
         
