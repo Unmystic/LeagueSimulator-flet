@@ -177,7 +177,15 @@ class NewLeague(ft.UserControl):
 
     def checkbox_changed(self, e):
 
-        if self.CreateTeamButton.disabled:
+        if self.PopulateLeagueButton.disabled:
+            self.CreateTeamButton.disabled = True
+            self.CreateTeamButton.update()
+            self.page.snack_bar = ft.SnackBar(ft.Text(f"League was already created!"))
+            self.page.snack_bar.open = True
+            self.page.update()
+
+
+        elif self.CreateTeamButton.disabled:
             self.CreateTeamButton.disabled = False
             self.CreateTeamButton.update()
             self.new_team_field.disabled = False
@@ -267,6 +275,9 @@ class NewLeague(ft.UserControl):
         self.PopulateLeagueButton.disabled = True
         self.PopulateLeagueButton.update()
         # self.page.update()
+        self.CreateTeamButton.disabled = True
+        self.CreateTeamButton.update()
+
     
 
     def build(self):

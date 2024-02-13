@@ -60,7 +60,7 @@ class SimulateLeague(ft.UserControl):
                             ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=10),
                         },
                         ),
-                        on_click=lambda e: print("Team created"),
+                        on_click=self.simulate_tour
                     )
         
         self.SimulateAllButton = ft.ElevatedButton(
@@ -137,7 +137,7 @@ class SimulateLeague(ft.UserControl):
 
         count = 1
 
-        self.pb = ft.ProgressBar(width=150, value =0.05, bar_height=40, tooltip="League progress")
+        self.pb = ft.ProgressBar(width=150, value =0, bar_height=40, tooltip="League progress")
 
 
         self.button_cont = ft.Container(content=ft.Column([self.SimulateTourButton, self.SimulateAllButton], 
@@ -176,7 +176,9 @@ class SimulateLeague(ft.UserControl):
                 {'Name': team, 'Rating': teamRating, 'Games': 0, 'Scored': 0, 'Conceded': 0,
                 '+/-': 0, 'W': 0, 'D': 0, 'L': 0, 'P': 0})
         
-        
+    def simulate_tour(self,e):
+        self.pb.value += 1/((len(self.teams) - 1)*2)
+        self.pb.update()
 
     def build(self):
         print("I am here!")
