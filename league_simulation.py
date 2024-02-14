@@ -2,6 +2,11 @@ import flet as ft
 import csv
 import statistics
 
+from Scripts.schedule import Schedule
+from Scripts.match_engine import Match
+import Scripts.check_HoF
+
+
 class SimulateLeague(ft.UserControl):
 
     def __init__(self, page: ft.Page):
@@ -22,12 +27,15 @@ class SimulateLeague(ft.UserControl):
 
         self.teams = {}
         self.table = []
+        self.calendar = []
+        self.tour = 0
+        Schedule()
         self.fieldnames = ['Name', 'Rating', 'Games', 'Scored', 'Conceded',
                     '+/-', 'W', 'D', 'L', 'P']
-
-        print(self.table)
+      
         self.create_table()
-        print(self.table)
+        self.fill_calendar()
+
         self.SimulateTourButton = ft.ElevatedButton(
                         content=ft.Container(
                             content=ft.Column(
@@ -97,36 +105,39 @@ class SimulateLeague(ft.UserControl):
                         on_click=lambda e: print("Teams added"),
                     )
         
-        self.league_table = ft.DataTable(
+
+        self.league_table = ft.Ref[ft.DataTable]()
+        # self.league_table = ft.DataTable(
                                 
-                    gradient=ft.LinearGradient(
-                        begin=ft.alignment.top_left,
-                        end=ft.alignment.bottom_right,
-                        colors=[ft.colors.PINK_200, ft.colors.WHITE],
-                        ),
-                    border=ft.border.all(2, "black"),
-                    border_radius=10,
-                    vertical_lines=ft.border.BorderSide(3, "blue"),
-                    horizontal_lines=ft.border.BorderSide(1, "green"),
-                    horizontal_margin=10,
-                    column_spacing=20,
-                    data_row_min_height=20,
-                    data_row_max_height=32,
-                    heading_row_height=30,
-                    data_text_style=ft.TextStyle(weight=ft.FontWeight.W_600, size=16),
-                    columns=[
-                        ft.DataColumn(ft.Text(f"{col}", size=17)) for col in self.fieldnames 
+        #             gradient=ft.LinearGradient(
+        #                 begin=ft.alignment.top_left,
+        #                 end=ft.alignment.bottom_right,
+        #                 colors=[ft.colors.PINK_200, ft.colors.WHITE],
+        #                 ),
+        #             border=ft.border.all(2, "black"),
+        #             border_radius=10,
+        #             vertical_lines=ft.border.BorderSide(3, "blue"),
+        #             horizontal_lines=ft.border.BorderSide(1, "green"),
+        #             horizontal_margin=10,
+        #             column_spacing=20,
+        #             data_row_min_height=20,
+        #             data_row_max_height=32,
+        #             heading_row_height=30,
+        #             data_text_style=ft.TextStyle(weight=ft.FontWeight.W_600, size=16),
+        #             columns=[
+        #                 ft.DataColumn(ft.Text(f"{col}", size=17)) for col in self.fieldnames 
 
-                    ],
-                    rows=[
-                        ft.DataRow(cells=[ ft.DataCell(ft.Text(f"{row[f'{k}']}",text_align="JUSTIFY")) for k in list(row.keys())]) for row in self.table
+        #             ],
+        #             rows=[
+        #                 ft.DataRow(cells=[ ft.DataCell(ft.Text(f"{row[f'{k}']}",text_align="JUSTIFY")) for k in list(row.keys())]) for row in self.table
 
-                    ]
-                    )  
+        #             ]
+        #             )  
 
+        self.match_data = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
 
         self.lv = ft.Container(
-                content=ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True),
+                content=self.match_data,
                 border=ft.border.all(2, ft.colors.GREEN_600),
                 border_radius= ft.border_radius.all(30),
                 width=700,
@@ -151,13 +162,42 @@ class SimulateLeague(ft.UserControl):
                 # self.league_table,
                 # ft.Column([ft.Text("Linear progress indicator", style="headlineSmall"),
                 #            ft.Container(content=ft.Column( [self.pb, self.button_cont]))])
-                self.league_table,
+                ft.DataTable(
+                    ref=self.league_table,                                
+                    gradient=ft.LinearGradient(
+                        begin=ft.alignment.top_left,
+                        end=ft.alignment.bottom_right,
+                        colors=[ft.colors.PINK_200, ft.colors.WHITE],
+                        ),
+                    border=ft.border.all(2, "black"),
+                    border_radius=10,
+                    vertical_lines=ft.border.BorderSide(3, "blue"),
+                    horizontal_lines=ft.border.BorderSide(1, "green"),
+                    horizontal_margin=10,
+                    column_spacing=20,
+                    data_row_min_height=20,
+                    data_row_max_height=32,
+                    heading_row_height=30,
+                    data_text_style=ft.TextStyle(weight=ft.FontWeight.W_600, size=16),
+                    columns=[ft.DataColumn(ft.Text(f"{col}", size=17)) for col in self.fieldnames ],
+                    rows=[ft.DataRow(cells=[ ft.DataCell(ft.Text(f"{row[f'{k}']}",text_align="JUSTIFY")) for k in list(row.keys())]) for row in self.table
+
+                    ]
+                    ),  
+                
                 ft.Container(content=ft.Column([ ft.Text("Progress of league", style="headlineSmall", width =100),
                                                 self.pb,
                                                 self.button_cont],
                         horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=50))
                     
                 ], spacing =50)
+
+    def table_update(self):
+        print(self.table)
+        self.league_table.current.rows =[ft.DataRow(cells=[ ft.DataCell(ft.Text(f"{row[f'{k}']}",text_align="JUSTIFY"))
+                                                           for k in list(row.keys())]) for row in self.table]
+        self.page.update()
+        self.first_tab.update() 
 
         
         
@@ -175,10 +215,141 @@ class SimulateLeague(ft.UserControl):
             self.table.append(
                 {'Name': team, 'Rating': teamRating, 'Games': 0, 'Scored': 0, 'Conceded': 0,
                 '+/-': 0, 'W': 0, 'D': 0, 'L': 0, 'P': 0})
+
+    def fill_calendar(self):
+        # Populate calendar with games
+        with open("Scripts/data/schedule.csv", "r") as file:
+            reader = csv.DictReader(file, fieldnames=["tour", "homeTeam", "awayTeam"])
+            for row in reader:
+                home = {}
+                home["tour"] = row["tour"]
+                home["name"] = row["homeTeam"]
+                home["rating"] = self.teams[row["homeTeam"]]
+                # Adding teamCohesion rating with each game
+                self.teams[row["homeTeam"]]["teamCohesion"] = float(self.teams[row["homeTeam"]]["teamCohesion"]) + 0.25
+
+
+                away = {}
+                away["tour"] = row["tour"]
+                away["name"] = row["awayTeam"]
+                away["rating"] = self.teams[row["awayTeam"]]
+                # Adding teamCohesion rating with each game
+                self.teams[row["awayTeam"]]["teamCohesion"] = float(self.teams[row["awayTeam"]]["teamCohesion"]) + 0.25
+
+                self.calendar.append([{"home": home, "away": away}])
+
+    def simulate_games(self):
+        # Simulating whole tournament using Match (from match_engine.py)
+        count_games = 0
+        self.tour += 1
+        self.publish_tourdata()
+        self.SimulateTourButton.disabled = True
+        self.SimulateTourButton.update()
+
+        for game in self.calendar:
+            # print(game[0]['home'],game[0]['away'] )
+            count_games += 1
+            match = Match(game[0]['home'], game[0]['away'], self.table)
+            result, self.table = match.match_data()
+            self.lv.content.controls.append(ft.Text(f"Line {result}"))
+            # self.Match_results.append(result)
+
+            if count_games == (len(self.teams) // 2):
+                if self.tour == (len(self.teams) - 1) * 2 :
+                    pass
+                else:
+                    self.tour += 1
+                    self.publish_tourdata()
+                    count_games = 0
+                    # self.update_label()
+
+        self.table.sort(reverse=True, key=self.Myfunc)
+        self.league_table.update()
         
-    def simulate_tour(self,e):
+
+        self.SimulateAllButton.disabled = True
+        self.SimulateAllButton.update()
+        # self.draw_table()
+        # self.btn_league.setEnabled(False)
+
+        # updating Label
+        self.tour = (len(self.teams) - 1) * 2
+        # self.update_label()
+
+        if self.table[0]['L'] == 0:
+            hof_table = Scripts.check_HoF.table_hof()
+            Scripts.check_HoF.compare_results(team=self.table[0], hof_table=hof_table)
+
+
+    def Myfunc(self, e):
+        """sort list with dictionary by one of values"""
+        return e['P']
+
+    def publish_tourdata(self):
+        self.lv.content.controls.append(ft.Text("\n"))
+        # self.Match_results.append("\n")
+        # self.Match_results.setFontItalic(True)
+        # self.Match_results.setFontUnderline(True)
+        self.lv.content.controls.append(f"Tour {self.tour} match results are :")
+        # self.Match_results.append(f"Tour {self.tour} match results are :")
+        # self.Match_results.setFontItalic(False)
+        # self.Match_results.setFontUnderline(False)
+        # self.Match_results.append("\n")
+        self.lv.content.controls.append(ft.Text("\n"))
+        # self.match_data.update()
+        
+        
+        
+
+    def simulate_tour(self, e):
+
         self.pb.value += 1/((len(self.teams) - 1)*2)
         self.pb.update()
+
+        games_in_tour = len(self.teams) // 2
+
+        if len(self.calendar) == games_in_tour:
+            self.SimulateTourButton.disabled = True
+            self.SimulateTourButton.update()
+
+            # self.btn_tour.setEnabled(False)
+            # self.btn_league.setEnabled(False)
+            self.SimulateAllButton.disabled = True
+            self.SimulateAllButton.update()
+
+        self.tour += 1
+        self.publish_tourdata()
+
+        for i in range(games_in_tour):
+
+            match = Match(self.calendar[i][0]['home'], self.calendar[i][0]['away'], self.table)
+            result, self.table = match.match_data()
+            self.lv.content.controls.append(ft.Text(f"Line {result}"))
+            # self.Match_results.append(result)
+            #print(self.calendar[i][0]['home']['rating']['teamCohesion'], self.calendar[i][0]['away']['rating']['teamCohesion'])
+
+        for i in range(games_in_tour):
+            self.calendar.pop(0)
+
+        self.table.sort(reverse=True, key=self.Myfunc)
+        
+        self.table_update()
+        self.page.update()
+        print(self.league_table.current.rows)
+
+        # self.draw_table()
+        # showing number of simulated tours
+        # self.update_label()
+
+        if len(self.calendar) == 0 and self.table[0]['L'] == 0:
+            hof_table = Scripts.check_HoF.table_hof()
+            Scripts.check_HoF.compare_results(team=self.table[0], hof_table=hof_table)
+
+
+    def tabs_changed(self,e):
+        print(self.match_data)
+        # self.lv.content.controls.update()
+
 
     def build(self):
         print("I am here!")
@@ -202,11 +373,12 @@ class SimulateLeague(ft.UserControl):
             ],
         # width=900,
         height=750,
+        on_change=self.tabs_changed
             
         )
 
         
-        # print("I am there!")
+      
         return  self.t
 
 
