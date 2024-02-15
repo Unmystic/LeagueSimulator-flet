@@ -107,37 +107,13 @@ class SimulateLeague(ft.UserControl):
         
 
         self.league_table = ft.Ref[ft.DataTable]()
-        # self.league_table = ft.DataTable(
-                                
-        #             gradient=ft.LinearGradient(
-        #                 begin=ft.alignment.top_left,
-        #                 end=ft.alignment.bottom_right,
-        #                 colors=[ft.colors.PINK_200, ft.colors.WHITE],
-        #                 ),
-        #             border=ft.border.all(2, "black"),
-        #             border_radius=10,
-        #             vertical_lines=ft.border.BorderSide(3, "blue"),
-        #             horizontal_lines=ft.border.BorderSide(1, "green"),
-        #             horizontal_margin=10,
-        #             column_spacing=20,
-        #             data_row_min_height=20,
-        #             data_row_max_height=32,
-        #             heading_row_height=30,
-        #             data_text_style=ft.TextStyle(weight=ft.FontWeight.W_600, size=16),
-        #             columns=[
-        #                 ft.DataColumn(ft.Text(f"{col}", size=17)) for col in self.fieldnames 
 
-        #             ],
-        #             rows=[
-        #                 ft.DataRow(cells=[ ft.DataCell(ft.Text(f"{row[f'{k}']}",text_align="JUSTIFY")) for k in list(row.keys())]) for row in self.table
-
-        #             ]
-        #             )  
-
-        self.match_data = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
+        self.match_data = ft.Ref[ft.ListView]()
+        # self.match_data = ft.ListView(ref=self.match_data, expand=1, spacing=10, padding=20, auto_scroll=True)
+        self.lstv =ft.ListView(ref=self.match_data, expand=1, spacing=10, padding=20, auto_scroll=True)
 
         self.lv = ft.Container(
-                content=self.match_data,
+                content=self.lstv,
                 border=ft.border.all(2, ft.colors.GREEN_600),
                 border_radius= ft.border_radius.all(30),
                 width=700,
@@ -154,9 +130,9 @@ class SimulateLeague(ft.UserControl):
         self.button_cont = ft.Container(content=ft.Column([self.SimulateTourButton, self.SimulateAllButton], 
                                                         spacing=175, horizontal_alignment= ft.CrossAxisAlignment.END)) 
 
-        for i in range(0, 60):
-            self.lv.content.controls.append(ft.Text(f"Line {count}"))
-            count += 1
+        # for i in range(0, 60):
+        #     self.lv.content.controls.append(ft.Text(f"Line {count}"))
+        #     count += 1
 
         self.first_tab = ft.Row(controls=[
                 # self.league_table,
@@ -185,20 +161,29 @@ class SimulateLeague(ft.UserControl):
                     ]
                     ),  
                 
-                ft.Container(content=ft.Column([ ft.Text("Progress of league", style="headlineSmall", width =100),
+                 ft.Container(content=ft.Column([ ft.Text("Progress of league", style="headlineSmall", width =100),
                                                 self.pb,
                                                 self.button_cont],
                         horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=50))
+
                     
                 ], spacing =50)
 
     def table_update(self):
-        print(self.table)
+        
         self.league_table.current.rows =[ft.DataRow(cells=[ ft.DataCell(ft.Text(f"{row[f'{k}']}",text_align="JUSTIFY"))
                                                            for k in list(row.keys())]) for row in self.table]
         self.page.update()
         self.first_tab.update() 
 
+    def matchdata_update(self,e):
+        print(self.match_data.current.controls)
+        
+        #self.t.update()
+        print(self.t.tabs[1].content.content.controls)
+        # self.lstv.update()
+        self.match_data.update()
+        self.page.update()
         
         
     def create_table(self):
@@ -238,11 +223,11 @@ class SimulateLeague(ft.UserControl):
 
                 self.calendar.append([{"home": home, "away": away}])
 
-    def simulate_games(self):
+    def simulate_games(self,e):
         # Simulating whole tournament using Match (from match_engine.py)
         count_games = 0
         self.tour += 1
-        self.publish_tourdata()
+        self.publish_tourdata(e)
         self.SimulateTourButton.disabled = True
         self.SimulateTourButton.update()
 
@@ -251,7 +236,8 @@ class SimulateLeague(ft.UserControl):
             count_games += 1
             match = Match(game[0]['home'], game[0]['away'], self.table)
             result, self.table = match.match_data()
-            self.lv.content.controls.append(ft.Text(f"Line {result}"))
+            self.match_data.current.controls.append(ft.Text(f"Line {result}"))
+            
             # self.Match_results.append(result)
 
             if count_games == (len(self.teams) // 2):
@@ -259,13 +245,14 @@ class SimulateLeague(ft.UserControl):
                     pass
                 else:
                     self.tour += 1
-                    self.publish_tourdata()
+                    self.publish_tourdata(e)
                     count_games = 0
                     # self.update_label()
 
         self.table.sort(reverse=True, key=self.Myfunc)
         self.league_table.update()
         
+        self.lv.update()
 
         self.SimulateAllButton.disabled = True
         self.SimulateAllButton.update()
@@ -285,26 +272,32 @@ class SimulateLeague(ft.UserControl):
         """sort list with dictionary by one of values"""
         return e['P']
 
-    def publish_tourdata(self):
+    def publish_tourdata(self,e):
+
+        
+        # self.match_data.current.controls.append(ft.Text("\n"))
         self.lv.content.controls.append(ft.Text("\n"))
         # self.Match_results.append("\n")
         # self.Match_results.setFontItalic(True)
         # self.Match_results.setFontUnderline(True)
-        self.lv.content.controls.append(f"Tour {self.tour} match results are :")
+        # self.match_data.current.controls.append(f"Tour {self.tour} match results are :")
+        self.lv.content.controls.append(ft.Text(f"Tour {self.tour} match results are :"))
         # self.Match_results.append(f"Tour {self.tour} match results are :")
         # self.Match_results.setFontItalic(False)
         # self.Match_results.setFontUnderline(False)
         # self.Match_results.append("\n")
+        # self.match_data.current.controls.append(ft.Text("\n"))
         self.lv.content.controls.append(ft.Text("\n"))
         # self.match_data.update()
-        
+        self.lv.update()
+        self.page.update()
         
         
 
     def simulate_tour(self, e):
 
         self.pb.value += 1/((len(self.teams) - 1)*2)
-        self.pb.update()
+        # self.pb.update()
 
         games_in_tour = len(self.teams) // 2
 
@@ -318,15 +311,18 @@ class SimulateLeague(ft.UserControl):
             self.SimulateAllButton.update()
 
         self.tour += 1
-        self.publish_tourdata()
+        self.publish_tourdata(e)
 
         for i in range(games_in_tour):
 
             match = Match(self.calendar[i][0]['home'], self.calendar[i][0]['away'], self.table)
             result, self.table = match.match_data()
-            self.lv.content.controls.append(ft.Text(f"Line {result}"))
+            self.match_data.current.controls.append(ft.Text(f"Line {result}"))
+            
+            
             # self.Match_results.append(result)
             #print(self.calendar[i][0]['home']['rating']['teamCohesion'], self.calendar[i][0]['away']['rating']['teamCohesion'])
+        self.lv.update()
 
         for i in range(games_in_tour):
             self.calendar.pop(0)
@@ -335,7 +331,7 @@ class SimulateLeague(ft.UserControl):
         
         self.table_update()
         self.page.update()
-        print(self.league_table.current.rows)
+        
 
         # self.draw_table()
         # showing number of simulated tours
@@ -347,7 +343,8 @@ class SimulateLeague(ft.UserControl):
 
 
     def tabs_changed(self,e):
-        print(self.match_data)
+        print("Tab switched")
+        # e.control.update()
         # self.lv.content.controls.update()
 
 
@@ -368,7 +365,7 @@ class SimulateLeague(ft.UserControl):
                 ft.Tab(
                     text="Match results",
                     icon=ft.icons.SHORT_TEXT,
-                    content=ft.Container(content=self.lv),
+                    content=ft.Container(content=self.lv)
                 ),
             ],
         # width=900,
