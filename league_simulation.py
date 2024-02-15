@@ -267,7 +267,8 @@ class SimulateLeague(ft.UserControl):
 
     def Myfunc(self, e):
         """sort list with dictionary by one of values"""
-        return e['P']
+
+        return (e['P'], int(e['+/-']))
 
     def publish_tourdata(self,e):
 
