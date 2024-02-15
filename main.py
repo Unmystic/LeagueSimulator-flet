@@ -22,7 +22,10 @@ def main(page: ft.Page):
     #page.theme_mode = ft.ThemeMode.LIGHT
     #page.theme = ft.theme.Theme(color_scheme_seed="green")
     page.bgcolor = "#D3FFDE"
+    page.padding = 0
+    page.update()
     page.spacing = 5
+
 
     def handle_menu_item_click(e):
         print(f"{e.control.content.value}.on_click")
@@ -38,12 +41,6 @@ def main(page: ft.Page):
     def handle_on_hover(e):
         print(f"{e.control.content.value}.on_hover")
 
-
-    # page.appbar = ft.AppBar(
-    #     title=ft.Text("Menus", ref=appbar_text_ref, font_family="Segoe Print Bold"),
-    #     center_title=True,
-    #     bgcolor=ft.colors.BLUE
-    # )
 
     menubar = ft.MenuBar(
         expand=True,
@@ -235,6 +232,7 @@ def main(page: ft.Page):
                     ft.Container(img, alignment=ft.alignment.center, expand=True),
                     ft.Row([btn1, btn2, btn3, btn4], alignment=ft.MainAxisAlignment.SPACE_EVENLY ) 
                 ],
+                bgcolor="#D3FFDE"
             )
         )
         if page.route == "/":
@@ -264,10 +262,10 @@ def main(page: ft.Page):
         if page.route == "/new-league":
             page.title = "Create new league"
             #page.bgcolor = ft.colors.SURFACE_VARIANT
-            page.window_height = 680
+            page.window_height = 640
             page.window_width = 480
             page.window_center()
-            page.window_min_height, page.window_min_width = 680, 480
+            page.window_min_height, page.window_min_width = 640, 480
             page.views.append(
                 ft.View(
                     "/new-league",
@@ -275,12 +273,12 @@ def main(page: ft.Page):
 
                         NewLeague(page),
                     ],
+                    bgcolor="#D3FFDE"
                 )
             )
 
         if page.route == "/simulation":
             page.title = "League simulation"
-            #page.bgcolor = ft.colors.SURFACE_VARIANT
             page.window_height = 800
             page.window_width = 980
             page.window_center()
@@ -292,6 +290,7 @@ def main(page: ft.Page):
 
                         SimulateLeague(page),
                     ],
+                    bgcolor="#D3FFDE"
                 )
             )
 

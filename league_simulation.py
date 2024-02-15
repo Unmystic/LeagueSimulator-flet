@@ -22,8 +22,10 @@ class SimulateLeague(ft.UserControl):
             "Segoe Print Bold": "fonts/segoeprint_bold.ttf",
         }
         # self.page.theme_mode = ft.ThemeMode.LIGHT
-        self.page.bgcolor =  ft.colors.SURFACE_VARIANT
+        self.page.bgcolor =  "green"
         self.page.spacing = 5
+
+        self.page.update()
 
         self.teams = {}
         self.table = []
@@ -117,6 +119,7 @@ class SimulateLeague(ft.UserControl):
                 border=ft.border.all(2, ft.colors.GREEN_600),
                 border_radius= ft.border_radius.all(30),
                 width=700,
+                bgcolor = ft.colors.SURFACE_VARIANT
                 
             )
         
@@ -128,7 +131,7 @@ class SimulateLeague(ft.UserControl):
 
 
         self.button_cont = ft.Container(content=ft.Column([self.SimulateTourButton, self.SimulateAllButton], 
-                                                        spacing=175, horizontal_alignment= ft.CrossAxisAlignment.END)) 
+                                                        spacing=175, horizontal_alignment= ft.CrossAxisAlignment.END), ) 
 
         # for i in range(0, 60):
         #     self.lv.content.controls.append(ft.Text(f"Line {count}"))
@@ -164,7 +167,7 @@ class SimulateLeague(ft.UserControl):
                  ft.Container(content=ft.Column([ ft.Text("Progress of league", style="headlineSmall", width =100),
                                                 self.pb,
                                                 self.button_cont],
-                        horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=50))
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=50),bgcolor = "#D3FFDE")
 
                     
                 ], spacing =50)
@@ -351,7 +354,8 @@ class SimulateLeague(ft.UserControl):
                 ft.Tab(
                     text="League Table ",
                     content=ft.Container(
-                        content=self.first_tab, alignment=ft.alignment.top_left
+                        content=self.first_tab, alignment=ft.alignment.top_left, 
+                        bgcolor ="#D3FFDE",
                     ),
                 ),
 
@@ -362,6 +366,9 @@ class SimulateLeague(ft.UserControl):
                 ),
             ],
         # width=900,
+        overlay_color = ft.colors.SURFACE_VARIANT,
+        unselected_label_color = "grey",
+        divider_color = "#D3FFDE",
         height=750,
         # on_change=self.tabs_changed
             
