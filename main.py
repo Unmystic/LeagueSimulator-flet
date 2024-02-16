@@ -1,11 +1,11 @@
 import flet as ft
 
-import about
-import tutorial
+import Scripts.about
+import Scripts.tutorial
 
-from hall_of_fame import HoFClass
-from new_league import NewLeague
-from league_simulation import SimulateLeague
+from Scripts.hall_of_fame import HoFClass
+from Scripts.new_league import NewLeague
+from Scripts.league_simulation import SimulateLeague
 
 def main(page: ft.Page):
 
@@ -93,14 +93,14 @@ def main(page: ft.Page):
                                 leading=ft.Icon(ft.icons.INFO),
                                 close_on_click=False,
                                 style=ft.ButtonStyle(bgcolor={ft.MaterialState.HOVERED: ft.colors.GREEN_200}),
-                                on_click=lambda e: about.About_dlg(page)
+                                on_click=lambda e: Scripts.about.About_dlg(page)
                             ),
                             ft.MenuItemButton(
                                 content=ft.Text("Tutorial"),
                                 leading=ft.Icon(ft.icons.HELP),
                                 close_on_click=False,
                                 style=ft.ButtonStyle(bgcolor={ft.MaterialState.HOVERED: ft.colors.GREEN_200}),
-                                on_click=lambda e: tutorial.Tutorial_dlg(page)
+                                on_click=lambda e: Scripts.tutorial.Tutorial_dlg(page)
                             )
                   
                 ]
@@ -309,13 +309,5 @@ def main(page: ft.Page):
 
 
 
-    # page.add(
-    #     ft.Row([menubar]), 
-    #     ft.Container(img, alignment=ft.alignment.center, expand=True),
-    #     ft.Row([btn1, btn2, btn3, btn4], alignment=ft.MainAxisAlignment.SPACE_EVENLY ) 
-        
-        
-    # )
 
-
-ft.app(target=main)
+ft.app(target=main, assets_dir="assets")
