@@ -32,6 +32,7 @@ class NewLeague(ft.UserControl):
         self.teams = []
 
 
+        # Here we go again with our WET dreams . TODO : create class for Buttons
         self.CreateTeamButton = ft.ElevatedButton(
                     content=ft.Text(value="Create team", size=14, font_family="Segoe Print Bold"),
                     style=ft.ButtonStyle(
@@ -110,6 +111,7 @@ class NewLeague(ft.UserControl):
                         on_click=lambda e: page.go("/simulation"),
                     )
 
+        # Using list view instead textfield for  universality reasons, also it is easier to add items
         self.TeamListBox = ft.Container(
                 content=ft.ListView(expand=1, spacing=1, padding=5, auto_scroll=True,item_extent=10, ),
                 border=ft.border.all(2, ft.colors.GREEN_600),
@@ -120,7 +122,7 @@ class NewLeague(ft.UserControl):
             )
         
 
-
+        # Display the selected number of particapnts via dropdown selection
         self.result = ft.Text(weight=ft.FontWeight.BOLD,size=20, value="4")
 
         self.playstyle = ft.Dropdown(
@@ -138,8 +140,10 @@ class NewLeague(ft.UserControl):
                         on_change=self.dropdown_changed
                         )
 
+        # Textfield for new team initialy disabled 
         self.new_team_field = ft.TextField(label="Team Name",border=ft.InputBorder.NONE, disabled=True, hint_text="Please enter your team name")
 
+        # Block for team creation wrapped in containers for grid manipulation reasons
         self.league_creation = ft.Container(content=ft.Column([
             ft.Container(bgcolor="#D3FFDE" ),
             ft.Row([
@@ -175,13 +179,15 @@ class NewLeague(ft.UserControl):
 
 
 
-
+    # Function for slider. Rewritind our laber with team numbers. Update necessary!
     def slider_changed(self,e):
         self.result.value = f"{int(e.control.value)}"
 
         self.result.update()
         self.page.update()
 
+
+    # Checkbox logic, including solution to "add team after populatind the league" problem
     def checkbox_changed(self, e):
 
         if self.PopulateLeagueButton.disabled:
@@ -210,7 +216,7 @@ class NewLeague(ft.UserControl):
         self.playstyle.error_text = None       
         self.playstyle.update()
 
-
+    #Button press logig for  Adding team to our listview
     def create_team(self,e):
         if self.new_team_field.value != "":
             print(self.playstyle.value)
@@ -218,9 +224,8 @@ class NewLeague(ft.UserControl):
                 self.playstyle.error_text= "Please choose playstyle"
                 self.playstyle.update()
                 return
-            # self.playstyle.update()
+
             self.count += 1
-            # self.listWidget.addItem(f"{self.count}. {self.lineEdit.text()}")
             choice = int(self.playstyle.value)
             ar, dr, tc = self.generate_rating(choice=choice)
             self.teams.append({"name": self.new_team_field.value, "attackRating": ar, "defenceRating": dr, "teamCohesion": tc})
@@ -228,6 +233,8 @@ class NewLeague(ft.UserControl):
             self.TeamListBox.update()
             self.new_team_field.value == ""
 
+
+    # Next three function taken from original code and slightly adapted. They are defining teams parameters and writing them in file
     def generate_rating(self, choice=2):
         ratings = [random.uniform(50, 59.99), random.uniform(60.00, 69.99), random.uniform(70.00, 79.99),
                    random.uniform(80.00, 89.99), random.uniform(90.00, 94.99)]
@@ -280,7 +287,6 @@ class NewLeague(ft.UserControl):
         self.StartSimulationButton.update()
         self.PopulateLeagueButton.disabled = True
         self.PopulateLeagueButton.update()
-        # self.page.update()
         self.CreateTeamButton.disabled = True
         self.CreateTeamButton.update()
 

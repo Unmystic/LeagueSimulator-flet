@@ -9,7 +9,8 @@ from Scripts.league_simulation import SimulateLeague
 
 def main(page: ft.Page):
 
-    #page.window_title_bar_hidden = True
+    # Setting basic page sizes. I disable min parameters foe views switch optimization
+
     page.window_height = 640
     page.window_width = 680
     page.window_center()
@@ -19,13 +20,14 @@ def main(page: ft.Page):
         "Segoe Print Bold": "fonts/segoeprint_bold.ttf",
     }
 
-    #page.theme_mode = ft.ThemeMode.LIGHT
-    #page.theme = ft.theme.Theme(color_scheme_seed="green")
-    page.bgcolor = "#D3FFDE"
+    # optional parameters. Does not matter if you use views
+    page.bgcolor = "#D3FFDE" 
     page.padding = 0
     page.update()
     page.spacing = 5
 
+
+    # Movement control function, not pertinent for prod. Use for monitoring
 
     def handle_menu_item_click(e):
         print(f"{e.control.content.value}.on_click")
@@ -41,6 +43,8 @@ def main(page: ft.Page):
     def handle_on_hover(e):
         print(f"{e.control.content.value}.on_hover")
 
+
+    # Defining controls of main page
 
     menubar = ft.MenuBar(
         expand=True,
@@ -117,6 +121,8 @@ def main(page: ft.Page):
         expand=True,
     )
 
+    # Every WET boy dream!!!  TODO: Seriously, need to create class for button
+
     btn1 = ft.ElevatedButton(
                     expand=True,
                     content=ft.Text(value="New League", size=16, font_family="Segoe Print Bold"),
@@ -192,7 +198,7 @@ def main(page: ft.Page):
                         ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=10),
                     },
                     ),
-                    on_click= lambda e: tutorial.Tutorial_dlg(page),
+                    on_click= lambda e: Scripts.tutorial.Tutorial_dlg(page),
                 )
     
     btn4 = ft.ElevatedButton(
@@ -218,9 +224,10 @@ def main(page: ft.Page):
                         ft.MaterialState.DEFAULT: ft.RoundedRectangleBorder(radius=10),
                     },
                     ),
-                    on_click=lambda e: about.About_dlg(page),
+                    on_click=lambda e: Scripts.about.About_dlg(page),
                 )
 
+    # Switch views(pages) fuction. Window size must be adapt by needs of every view
 
     def route_change(route):
         page.views.clear()
@@ -240,7 +247,7 @@ def main(page: ft.Page):
             page.window_height = 640
             page.window_width = 680
             page.window_center()
-            # page.window_min_height, page.window_min_width = 640, 680
+            
 
         if page.route == "/hof":
             page.title = "Hall of fame"
@@ -261,7 +268,6 @@ def main(page: ft.Page):
 
         if page.route == "/new-league":
             page.title = "Create new league"
-            #page.bgcolor = ft.colors.SURFACE_VARIANT
             page.window_height = 640
             page.window_width = 480
             page.window_center()
@@ -297,6 +303,9 @@ def main(page: ft.Page):
 
         page.update()
 
+
+    # A way to removing views, when using BACK button. Currently used in HoF table
+        
     def view_pop(view):
         page.views.pop()
         top_view = page.views[-1]

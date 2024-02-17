@@ -21,7 +21,6 @@ class SimulateLeague(ft.UserControl):
         self.page.fonts = {        
             "Segoe Print Bold": "fonts/segoeprint_bold.ttf",
         }
-        # self.page.theme_mode = ft.ThemeMode.LIGHT
         self.page.bgcolor =  "green"
         self.page.spacing = 5
 
@@ -38,6 +37,7 @@ class SimulateLeague(ft.UserControl):
         self.create_table()
         self.fill_calendar()
 
+        # Third WET boy adventure with buttons. TODO : rewrite buttons by creating the single class
         self.SimulateTourButton = ft.ElevatedButton(
                         content=ft.Container(
                             content=ft.Column(
@@ -49,7 +49,7 @@ class SimulateLeague(ft.UserControl):
                                 spacing=5,
                                 ),
                             padding=ft.padding.all(10),),
-                        # content=ft.Text(value="Create team", size=14, font_family="Segoe Print Bold"),
+
                         style=ft.ButtonStyle(
                         color={
                             ft.MaterialState.HOVERED: ft.colors.BLACK,
@@ -111,9 +111,9 @@ class SimulateLeague(ft.UserControl):
         self.league_table = ft.Ref[ft.DataTable]()
 
         self.match_data = ft.Ref[ft.ListView]()
-        # self.match_data = ft.ListView(ref=self.match_data, expand=1, spacing=10, padding=20, auto_scroll=True)
         self.lstv =ft.ListView(ref=self.match_data, expand=1, spacing=10, padding=20, auto_scroll=True)
 
+        # Defining container for our matchdata listview
         self.lv = ft.Container(
                 content=self.lstv,
                 border=ft.border.all(2, ft.colors.GREEN_600),
@@ -133,14 +133,10 @@ class SimulateLeague(ft.UserControl):
         self.button_cont = ft.Container(content=ft.Column([self.SimulateTourButton, self.SimulateAllButton], 
                                                         spacing=175, horizontal_alignment= ft.CrossAxisAlignment.END), ) 
 
-        # for i in range(0, 60):
-        #     self.lv.content.controls.append(ft.Text(f"Line {count}"))
-        #     count += 1
+        # Our main and first tab four our TabView will include league table and container with buttons and progress bar
 
         self.first_tab = ft.Row(controls=[
-                # self.league_table,
-                # ft.Column([ft.Text("Linear progress indicator", style="headlineSmall"),
-                #            ft.Container(content=ft.Column( [self.pb, self.button_cont]))])
+
                 ft.DataTable(
                     ref=self.league_table,                                
                     gradient=ft.LinearGradient(
@@ -172,6 +168,7 @@ class SimulateLeague(ft.UserControl):
                     
                 ], spacing =50)
 
+    # Update functions for our tabs, because view does not update themselfs
     def table_update(self):
         
         self.league_table.current.rows =[ft.DataRow(cells=[ ft.DataCell(ft.Text(f"{row[f'{k}']}",text_align="JUSTIFY"))
@@ -184,7 +181,7 @@ class SimulateLeague(ft.UserControl):
         self.match_data.update()
         self.page.update()
         
-        
+    #Rest of the functions,excluding build and tab change, are modified version of original functions.    
     def create_table(self):
         with open("Scripts/data/teams.csv", "r") as file:
             reader = csv.DictReader(file, fieldnames=["name", "attackRating", "defenceRating", "teamCohesion"])
@@ -222,6 +219,7 @@ class SimulateLeague(ft.UserControl):
 
                 self.calendar.append([{"home": home, "away": away}])
 
+    
     def simulate_games(self,e):
         # Simulating whole tournament using Match (from match_engine.py)
 
@@ -267,29 +265,18 @@ class SimulateLeague(ft.UserControl):
             hof_table = Scripts.check_HoF.table_hof()
             Scripts.check_HoF.compare_results(team=self.table[0], hof_table=hof_table)
 
-
+    # Sort table function was update to solve the "same amount of points" situations 
     def Myfunc(self, e):
-        """sort list with dictionary by one of values"""
+        """sort list with dictionary by not one, but two of values"""
 
         return (e['P'], int(e['+/-']))
 
     def publish_tourdata(self,e):
 
-        
-        # self.match_data.current.controls.append(ft.Text("\n"))
         self.lv.content.controls.append(ft.Text("\n"))
-        # self.Match_results.append("\n")
-        # self.Match_results.setFontItalic(True)
-        # self.Match_results.setFontUnderline(True)
-        # self.match_data.current.controls.append(f"Tour {self.tour} match results are :")
         self.lv.content.controls.append(ft.Text(f"Tour {self.tour} match results are :", italic=True, size=18))
-        # self.Match_results.append(f"Tour {self.tour} match results are :")
-        # self.Match_results.setFontItalic(False)
-        # self.Match_results.setFontUnderline(False)
-        # self.Match_results.append("\n")
-        # self.match_data.current.controls.append(ft.Text("\n"))
         self.lv.content.controls.append(ft.Text("\n"))
-        # self.match_data.update()
+
         self.lv.update()
         self.page.update()
         
@@ -298,7 +285,6 @@ class SimulateLeague(ft.UserControl):
     def simulate_tour(self, e):
 
         self.pb.value += 1/((len(self.teams) - 1)*2)
-        # self.pb.update()
 
         games_in_tour = len(self.teams) // 2
 
@@ -330,21 +316,15 @@ class SimulateLeague(ft.UserControl):
         self.page.update()
         
 
-        # self.draw_table()
-        # showing number of simulated tours
-        # self.update_label()
-
         if len(self.calendar) == 0 and self.table[0]['L'] == 0:
             hof_table = Scripts.check_HoF.table_hof()
             Scripts.check_HoF.compare_results(team=self.table[0], hof_table=hof_table)
 
-
+    # Does not do any difference, but could
     def tabs_changed(self,e):
         print("Tab switched")
-        # e.control.update()
-        # self.lv.content.controls.update()
 
-
+    # Tab control defined in build function with no particular reason
     def build(self):
         
         self.t = ft.Tabs(
@@ -370,12 +350,9 @@ class SimulateLeague(ft.UserControl):
         unselected_label_color = "grey",
         divider_color = "#D3FFDE",
         height=750,
-        # on_change=self.tabs_changed
-            
+        # on_change=self.tabs_changed         
         )
-
-        
-      
+     
         return  self.t
 
 
